@@ -6,7 +6,7 @@ import Item from '../../components/Item';
 import InputContainer from '../../components/InputContainer';
 
 function TodoList({navigation}) {
-  const {todos} = useSelector(state => state.todos);
+  const {todos, isLoading} = useSelector(state => state.todos);
 
   const dispatch = useDispatch();
 

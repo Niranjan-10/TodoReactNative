@@ -12,6 +12,7 @@ import {
   updateInLocalTodo,
   updateTodo
 } from '../features/todo/TodoSlice';
+import { Colors } from '../utils';
 
 function Item({item}) {
   const [showDeleteDialog, setDeleteDialog] = useState(false);
@@ -60,7 +61,6 @@ function Item({item}) {
       dispatch(resetState());
     }
   }, [updateSucess]);
-
 
   // handle update todo (updating text and updating the completed or not)
   const handleUpdate = data => {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#645CBB',
+    backgroundColor: Colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 16,
     marginVertical: 4,
@@ -192,12 +192,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   completedItem: {
-    backgroundColor: '#A084DC',
-    borderColor: '#645CBB',
+    backgroundColor: Colors.secondary,
+    borderColor: Colors.primary,
     borderWidth: 2,
   },
   icon: {
-    color: '#ffffff',
+    color: Colors.white,
   },
 });
 

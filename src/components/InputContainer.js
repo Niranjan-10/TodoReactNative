@@ -1,19 +1,17 @@
-import { useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import EvilIcons from 'react-native-vector-icons/Entypo';
-import { useDispatch, useSelector } from 'react-redux';
-import { addInLocalTodo, addTodo, resetState } from '../features/todo/TodoSlice';
-import { getRandomInt } from '../utils';
+import {useEffect} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import {Keyboard, Pressable, StyleSheet, View} from 'react-native';
+import {TextInput} from 'react-native-paper';
+import AntIcons from 'react-native-vector-icons/AntDesign';
+import {useDispatch, useSelector} from 'react-redux';
+import {addInLocalTodo, addTodo, resetState} from '../features/todo/TodoSlice';
+import {Colors, getRandomInt} from '../utils';
 
 function InputContainer() {
   const dispatch = useDispatch();
-  const {isLoading, error, addTodoSuccess, todo, formState} = useSelector(
-    state => state.todos,
-  );
+  const {isLoading, addTodoSuccess} = useSelector(state => state.todos);
 
-  const {control, handleSubmit, reset, setValue, watch} = useForm({
+  const {control, handleSubmit, reset, watch} = useForm({
     defaultValues: {
       title: '',
       completed: false,
@@ -42,11 +40,11 @@ function InputContainer() {
         userId: getRandomInt(),
       }),
     );
-    Keyboard.dismiss(); 
+    Keyboard.dismiss();
   };
 
   const checkDisable = () => {
-    return watchTitle.length <= 0 || isLoading;
+    return watchTitle.length <= 0 ;
   };
 
   return (
@@ -66,8 +64,15 @@ function InputContainer() {
           />
         )}
       />
-      <Pressable disabled={checkDisable()} onPress={handleSubmit(onSubmit)}>
-        <EvilIcons name="circle-with-plus" style={styles.icon} size={48} />
+      <Pressable
+        disabled={checkDisable()}
+        onPress={handleSubmit(onSubmit)}
+        android_ripple={styles.ripple}>
+        <AntIcons
+          name="plussquare"
+          style={checkDisable() ? styles.disableIcon : styles.icon}
+          size={48}
+        />
       </Pressable>
     </View>
   );
@@ -89,7 +94,13 @@ const styles = StyleSheet.create({
     width: 50,
   },
   icon: {
-    color: '#645CBB',
+    color: Colors.primary,
+  },
+  ripple: {
+    color: Colors.secondary,
+  },
+  disableIcon: {
+    color: Colors.disabled,
   },
 });
 
