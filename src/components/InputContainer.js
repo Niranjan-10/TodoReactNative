@@ -1,11 +1,12 @@
-import {useEffect} from 'react';
-import {Controller, useForm} from 'react-hook-form';
-import {Keyboard, Pressable, StyleSheet, View} from 'react-native';
-import {TextInput} from 'react-native-paper';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import AntIcons from 'react-native-vector-icons/AntDesign';
-import {useDispatch, useSelector} from 'react-redux';
-import {addInLocalTodo, addTodo, resetState} from '../features/todo/TodoSlice';
-import {Colors, getRandomInt} from '../utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { TODO_INPUT, TODO_SUBIMIT_BUTTON } from '../AccessibilityConstants';
+import { addInLocalTodo, addTodo, resetState } from '../features/todo/TodoSlice';
+import { Colors, getRandomInt } from '../utils';
 
 function InputContainer() {
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ function InputContainer() {
   };
 
   const checkDisable = () => {
-    return watchTitle.length <= 0 ;
+    return watchTitle.length <= 0;
   };
 
   return (
@@ -54,6 +55,9 @@ function InputContainer() {
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
           <TextInput
+            accessible={true}
+            accessibilityLabel={TODO_INPUT}
+            testID={TODO_INPUT}
             mode="outlined"
             placeholder="Write your todo..."
             value={value}
@@ -67,6 +71,9 @@ function InputContainer() {
       <Pressable
         disabled={checkDisable()}
         onPress={handleSubmit(onSubmit)}
+        accessible={true}
+        accessibilityLabel={TODO_SUBIMIT_BUTTON}
+        testID={TODO_SUBIMIT_BUTTON}
         android_ripple={styles.ripple}>
         <AntIcons
           name="plussquare"

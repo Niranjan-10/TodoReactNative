@@ -1,95 +1,29 @@
-import { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Button, Dialog, Portal, TextInput } from 'react-native-paper';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useDispatch, useSelector } from 'react-redux';
 import {
-  deleteInLocalTodo,
-  deleteTodo,
-  resetState,
-  updateInLocalTodo,
-  updateTodo
-} from '../features/todo/TodoSlice';
-import { Colors } from '../utils';
+  ITEM,
+  ITEM_COMPLETED,
+  ITEM_PENDING,
+  ITEM_UPDATE,
+} from '../AccessibilityConstants';
+import {updateTodo} from '../features/todo/TodoSlice';
+import {Colors} from '../utils';
 
-function Item({item}) {
-  const [showDeleteDialog, setDeleteDialog] = useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-
-  const dispatch = useDispatch();
-  const {deleteSuccess, updateSucess} = useSelector(state => state.todos);
-
-  const {control, handleSubmit} = useForm({
-    defaultValues: {
-      title: item.title,
-      completed: item.completed,
-      id: item.id,
-      userId: item.userId,
-    },
-  });
-
-  // Hide delete delete dialog
-  const hideDialog = () => {
-    setDeleteDialog(false);
-  };
-
-  const hideUpdateDialog = () => {
-    setShowUpdateDialog(false);
-  };
-
-  // To call delete api
-  const onDelete = id => {
-    dispatch(deleteTodo({id}));
-    hideDialog();
-  };
-
-  // To handle local changes after delete
-  useEffect(() => {
-    if (deleteSuccess) {
-      dispatch(deleteInLocalTodo());
-      dispatch(resetState());
-    }
-  }, [deleteSuccess]);
-
-  // To handle local changes after update
-  useEffect(() => {
-    if (updateSucess) {
-      setShowUpdateDialog(false);
-      dispatch(updateInLocalTodo());
-      dispatch(resetState());
-    }
-  }, [updateSucess]);
-
-  // handle update todo (updating text and updating the completed or not)
-  const handleUpdate = data => {
-    dispatch(
-      updateTodo({
-        ...data,
-      }),
-    );
-  };
-
-  // React hook form submit handle here
-  const onSubmit = data => {
-    handleUpdate(data);
-  };
-
+function Item({item, handleUpdateDialog, handleCompleted, handlePending}) {
   return (
     <View
-      style={
-        item.completed ? [styles.item, styles.completedItem] : styles.item
-      }>
+      style={item.completed ? [styles.item, styles.completedItem] : styles.item}
+      accessible={true}
+      accessibilityLabel={ITEM}
+      testID={ITEM}>
       <View>
         {item.completed ? (
           <Pressable
-            onPress={() =>
-              handleUpdate({
-                ...item,
-                completed: false,
-              })
-            }>
+            accessible={true}
+            accessibilityLabel={ITEM_COMPLETED}
+            testID={ITEM_COMPLETED}
+            onPress={() => handlePending()}>
             <MaterialCommunityIcons
               style={styles.icon}
               name="checkbox-marked-outline"
@@ -98,12 +32,10 @@ function Item({item}) {
           </Pressable>
         ) : (
           <Pressable
-            onPress={() =>
-              handleUpdate({
-                ...item,
-                completed: true,
-              })
-            }>
+            accessible={true}
+            accessibilityLabel={ITEM_PENDING}
+            testID={ITEM_PENDING}
+            onPress={() => handleCompleted()}>
             <MaterialCommunityIcons
               style={styles.icon}
               name="checkbox-blank-outline"
@@ -113,7 +45,12 @@ function Item({item}) {
         )}
       </View>
       <Pressable
-        onPress={() => setShowUpdateDialog(true)}
+        accessible={true}
+        accessibilityLabel={ITEM_UPDATE}
+        testID={ITEM_UPDATE}
+        onPress={() => {
+          handleUpdateDialog();
+        }}
         style={styles.itemText}>
         <Text
           ellipsizeMode="tail"
@@ -130,43 +67,6 @@ function Item({item}) {
           <MaterialIcons style={styles.icon} name="delete" size={20} />
         </Pressable>
       </View>
-      <Portal>
-        <Dialog visible={showDeleteDialog} onDismiss={hideDialog}>
-          <Dialog.Title>Do you want to delete?</Dialog.Title>
-          <Dialog.Content>
-            <Text>By clicking on OK it will delete the todo.</Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialog}>Cancel</Button>
-            <Button onPress={() => onDelete(item.id)}>Yes</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-      <Portal>
-        <Dialog visible={showUpdateDialog} onDismiss={hideUpdateDialog}>
-          <Dialog.Title>Update Todo</Dialog.Title>
-          <Dialog.Content>
-            <Controller
-              name="title"
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  mode="outlined"
-                  placeholder="Write your todo..."
-                  value={value}
-                  onChangeText={value => onChange(value)}
-                  name="title"
-                  style={styles.input}
-                />
-              )}
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideUpdateDialog}>Cancel</Button>
-            <Button onPress={handleSubmit(onSubmit)}>Update</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
     </View>
   );
 }
