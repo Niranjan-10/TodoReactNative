@@ -1,13 +1,21 @@
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Keyboard, StyleSheet, Text, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
-import { EMAIL, LOGIN_BUTTON, PASSWORD } from '../../AccessibilityConstants';
-import { TODO_LIST } from '../../NavigationConstants';
-import { Colors } from '../../utils';
+import {useState} from 'react';
+import {Controller, useForm} from 'react-hook-form';
+import {Keyboard, StyleSheet, Text, View} from 'react-native';
+import {Button, TextInput} from 'react-native-paper';
+import {
+  EMAIL,
+  LOGIN_BUTTON,
+  PASSWORD,
+  TEXT,
+} from '../../AccessibilityConstants';
+import {TODO_LIST} from '../../NavigationConstants';
+import {Colors} from '../../utils';
 
 function Login({navigation}) {
   const [showPassword, setShowPassword] = useState(true);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const {control, handleSubmit, reset, watch} = useForm({
     defaultValues: {
@@ -19,8 +27,8 @@ function Login({navigation}) {
   const watchEmail = watch('email');
   const watchPassword = watch('password');
 
-  const handleLogin = data => {
-    const {email, password} = data;
+  const handleLogin = () => {
+    // const {email, password} = data;
     if (email === 'xyz@gmail.com' && password === '12345') {
       navigation.replace(TODO_LIST);
     }
@@ -29,18 +37,50 @@ function Login({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.textWrapper}>
-        <Text style={styles.text}> Hey, Welcome back!! </Text>
+        <Text
+          style={styles.text}
+          accessible={true}
+          accessibilityLabel={TEXT}
+          testID={TEXT}>
+          {' '}
+          Hey, Welcome back!!{' '}
+        </Text>
       </View>
 
       <View>
-        <Controller
+        <TextInput
+          accessible={true}
+          accessibilityLabel={EMAIL}
+          testID={EMAIL}
+          mode="outlined"
+          placeholder="Email"
+          value={email}
+          onChangeText={value => setEmail(value)}
+          name="email"
+          style={styles.input}
+          onSubmitEditing={Keyboard.dismiss}
+        />
+        <TextInput
+          mode="outlined"
+          placeholder="Password.."
+          value={password}
+          accessible={true}
+          accessibilityLabel={PASSWORD}
+          testID={PASSWORD}
+          maxLength={5}
+          onChangeText={value => setPassword(value)}
+          name="password"
+          style={styles.input}
+          onSubmitEditing={Keyboard.dismiss}
+        />
+        {/* <Controller
+          accessible={true}
+          accessibilityLabel={EMAIL}
+          testID={EMAIL}
           name="email"
           control={control}
           render={({field: {onChange, onBlur, value}}) => (
             <TextInput
-              accessible={true}
-              accessibilityLabel={EMAIL}
-              testID={EMAIL}
               mode="outlined"
               placeholder="Email"
               value={value}
@@ -54,12 +94,12 @@ function Login({navigation}) {
         <Controller
           name="password"
           control={control}
+          accessible={true}
+          accessibilityLabel={PASSWORD}
+          testID={PASSWORD}
           render={({field: {onChange, onBlur, value}}) => (
             <TextInput
               mode="outlined"
-              accessible={true}
-              accessibilityLabel={PASSWORD}
-              testID={PASSWORD}
               placeholder="Password"
               value={value}
               secureTextEntry={showPassword}
@@ -80,14 +120,16 @@ function Login({navigation}) {
               onSubmitEditing={Keyboard.dismiss}
             />
           )}
-        />
+        /> */}
+
         <Button
-          style={styles.button}
-          mode="contained"
           accessible={true}
           accessibilityLabel={LOGIN_BUTTON}
-          disabled={!watchEmail || !watchPassword}
-          onPress={handleSubmit(handleLogin)}>
+          testID={LOGIN_BUTTON}
+          style={styles.button}
+          mode="contained"
+          // disabled={!watchEmail || !watchPassword}
+          onPress={() => handleLogin()}>
           Login
         </Button>
       </View>
@@ -113,7 +155,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color: Colors.primary,
+    color: Colors.secondary,
     fontWeight: '700',
   },
   textWrapper: {

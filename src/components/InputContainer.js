@@ -58,6 +58,7 @@ function InputContainer() {
             accessible={true}
             accessibilityLabel={TODO_INPUT}
             testID={TODO_INPUT}
+            id={TODO_INPUT}
             mode="outlined"
             placeholder="Write your todo..."
             value={value}

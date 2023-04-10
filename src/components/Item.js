@@ -4,39 +4,38 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   ITEM,
   ITEM_COMPLETED,
+  ITEM_DELETE,
   ITEM_PENDING,
   ITEM_UPDATE,
 } from '../AccessibilityConstants';
 import {updateTodo} from '../features/todo/TodoSlice';
 import {Colors} from '../utils';
 
-function Item({item, handleUpdateDialog, handleCompleted, handlePending}) {
+function Item({item, handleUpdateDialog, handleCompleted, handlePending, handleDelete}) {
   return (
     <View
       style={item.completed ? [styles.item, styles.completedItem] : styles.item}
       accessible={true}
-      accessibilityLabel={ITEM}
-      testID={ITEM}>
+      accessibilityLabel={ITEM + item.id}
+      testID={ITEM + item.id}>
       <View>
         {item.completed ? (
-          <Pressable
-            accessible={true}
-            accessibilityLabel={ITEM_COMPLETED}
-            testID={ITEM_COMPLETED}
-            onPress={() => handlePending()}>
+          <Pressable onPress={() => handlePending()}>
             <MaterialCommunityIcons
+              accessible={true}
+              accessibilityLabel={ITEM_COMPLETED + item.id}
+              testID={ITEM_COMPLETED + item.id}
               style={styles.icon}
               name="checkbox-marked-outline"
               size={20}
             />
           </Pressable>
         ) : (
-          <Pressable
-            accessible={true}
-            accessibilityLabel={ITEM_PENDING}
-            testID={ITEM_PENDING}
-            onPress={() => handleCompleted()}>
+          <Pressable onPress={() => handleCompleted()}>
             <MaterialCommunityIcons
+              accessible={true}
+              accessibilityLabel={ITEM_PENDING + item.id}
+              testID={ITEM_PENDING + item.id}
               style={styles.icon}
               name="checkbox-blank-outline"
               size={20}
@@ -45,14 +44,14 @@ function Item({item, handleUpdateDialog, handleCompleted, handlePending}) {
         )}
       </View>
       <Pressable
-        accessible={true}
-        accessibilityLabel={ITEM_UPDATE}
-        testID={ITEM_UPDATE}
         onPress={() => {
           handleUpdateDialog();
         }}
         style={styles.itemText}>
         <Text
+          accessible={true}
+          accessibilityLabel={ITEM_UPDATE + item.id}
+          testID={ITEM_UPDATE + item.id}
           ellipsizeMode="tail"
           numberOfLines={1}
           style={{
@@ -63,8 +62,15 @@ function Item({item, handleUpdateDialog, handleCompleted, handlePending}) {
         </Text>
       </Pressable>
       <View style={styles.iconContainer}>
-        <Pressable onPress={() => setDeleteDialog(true)}>
-          <MaterialIcons style={styles.icon} name="delete" size={20} />
+        <Pressable onPress={() => handleDelete()}>
+          <MaterialIcons
+            accessible={true}
+            accessibilityLabel={ITEM_DELETE}
+            testID={ITEM_DELETE}
+            style={styles.icon}
+            name="delete"
+            size={20}
+          />
         </Pressable>
       </View>
     </View>

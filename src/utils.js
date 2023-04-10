@@ -4,7 +4,7 @@ export function getRandomInt() {
 
 export const Colors = {
   primary: '#645CBB',
-  secondary: '#A084DC',
+  secondary: '#6AC47E',
   disabled: '#D6E4E5',
   white:  '#ffffff'
 }
